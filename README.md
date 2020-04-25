@@ -1,3 +1,6 @@
+# Modelling mask particle capture efficiency
+
+![](assets/penetration_gaussian_prior.png)
 
 
 ## References
