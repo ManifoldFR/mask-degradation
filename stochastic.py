@@ -51,11 +51,13 @@ print(results.shape)
 import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
+plt.rcParams['text.usetex'] = True
 
 # plt.plot(particle_diam, results)
 low_bound = results.mean(0) - 2 * results.std(0)
 high_bound = results.mean(0) + 2 * results.std(0)
 
+fig: plt.Figure = plt.figure()
 plt.plot(particle_diam, results.mean(dim=0), label="Mean")
 plt.fill_between(particle_diam, low_bound, high_bound, alpha=.4,
                  label=r"95% confidence interval")
@@ -67,5 +69,4 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-
-
+fig.savefig('assets/penetration_gaussian_prior.png')

@@ -3,7 +3,7 @@
 ![](assets/penetration_gaussian_prior.png)
 
 
-`test_comparison_polar` compares the impact of accounting for polarization effects in the penetration model.
+`test_comparison_polar.py` compares the impact of accounting for polarization effects in the penetration model.
 
 
 ## References
