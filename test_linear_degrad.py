@@ -39,7 +39,6 @@ results = []
 
 for t in times:
     state = degrad.step(t)
-    print("Time t:", state)
     res_t = compute_penetration_profile(
         particle_diam, state, face_vel, temp, viscosity)
     results.append(res_t)
