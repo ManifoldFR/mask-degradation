@@ -150,4 +150,8 @@ def compute_penetration_profile(d_p, layer_params: List[LayerParams], face_veloc
                                          face_velocity, temp, viscosity,
                                          charge=param.charge_density, permittivity=param.permittivity)
         res_ += layer_penet_
-    return res_.exp()
+    if isinstance(res_, np.ndarray):
+        return np.exp(res_)
+    else:
+        # assume torch.Tensor
+        return res_.exp()
