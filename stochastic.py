@@ -21,9 +21,10 @@ particle_diam_log = torch.linspace(math.log(10), math.log(1000), 41)
 particle_diam = torch.exp(particle_diam_log) * constants.nano
 
 def respirator_stochastic():
-    loc = 13 * constants.nano
-    std = 1.0 * constants.nano
-    charge = pyro.sample('q', dist.Normal(loc, std))
+    # loc = 13 * constants.nano
+    # std = 1.0 * constants.nano
+    # charge = pyro.sample('q', dist.Normal(loc, std))
+    charge = pyro.sample('q', dist.Uniform(13 * constants.nano, 14 * constants.nano))
     
 
     surface_area, layer_params = respirator_A()
@@ -46,8 +47,6 @@ def respirator_stochastic():
 with pyro.plate("respirator", 1000, dim=-2):
     results: torch.Tensor = respirator_stochastic()
 
-print(results.shape)
-
 import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
@@ -60,13 +59,13 @@ high_bound = results.mean(0) + 2 * results.std(0)
 fig: plt.Figure = plt.figure()
 plt.plot(particle_diam, results.mean(dim=0), label="Mean")
 plt.fill_between(particle_diam, low_bound, high_bound, alpha=.4,
-                 label=r"95% confidence interval")
+                 label=r"95\% confidence interval")
 plt.xlabel("Particle size $d_p$")
 plt.ylabel("Penetration")
 plt.xscale('log')
-plt.title("Charge density prior $q \sim \\mathcal{N}(13, 1)$ nm")
+plt.title("Charge density prior $q \sim \\mathcal{U}(13, 14)$ nm")
 plt.legend()
 plt.tight_layout()
 plt.show()
 
-fig.savefig('assets/penetration_gaussian_prior.png')
+fig.savefig('assets/penetration_uniform_prior.png')

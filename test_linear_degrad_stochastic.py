@@ -84,7 +84,9 @@ line, = plt.plot(particle_diam, results_mean[0])
 
 def init():
     line.set_ydata(results[0])
-    return line, text,
+    conf_interv = plt.fill_between(particle_diam, results_low[0], results_high[0],
+                                   alpha=.4, facecolor='C0')
+    return line, text, conf_interv
 
 def anim_func(k):
     text.set_text("$t={:.3f}$h".format(times[k] / constants.hour))
@@ -99,6 +101,7 @@ anim_ = animation.FuncAnimation(fig, anim_func, init_func=init,
                                 interval=1e3/fps, repeat=False)
 
 ylims_ = plt.ylim()
+plt.title("Evolution with $\\mathcal{N}(13, 1)$ in nm")
 plt.ylim((ylims_[0], torch.max(results_high) * 1.05))
 plt.xlabel("Particle size $d_p$")
 plt.ylabel("Penetration")
@@ -106,4 +109,4 @@ plt.xscale('log')
 plt.tight_layout()
 plt.show()
 
-# anim_.save("stochastic_linear_degrad.gif", writer='imagemagick', fps=fps)
+anim_.save("assets/stochastic_linear_degrad.gif", writer='imagemagick', fps=fps)

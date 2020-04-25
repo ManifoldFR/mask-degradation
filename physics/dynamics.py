@@ -20,7 +20,7 @@ class LinearDegradation:
             self.slope = rate
         else:    
             self.slope = {
-                "d_f": rate,  # increase
+                "d_f": rate,
                 "charge_density": -rate
             }
 

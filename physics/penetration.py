@@ -6,6 +6,7 @@ import numpy as np
 from scipy import constants  # physics constants! :)
 from dataclasses import dataclass
 from typing import List
+import math
 
 
 def kuwabara_number(alpha):
@@ -43,7 +44,8 @@ def cunningham_slip_correction(d_p, knudsen):
 def knudsen_number(d_p):
     gas_free_path = 65 * constants.nano  # under normal conditions
     # particle radius = 1/2 diameter (?)
-    knudsen = gas_free_path / d_p
+    radius = d_p
+    knudsen = gas_free_path / radius
     return knudsen
 
 # Efficiencies
@@ -57,7 +59,7 @@ def diffusion_efficiency(d_p, d_f, face_velocity, diff_coef, alpha):
     """
     ku = kuwabara_number(alpha)
     pe = peclet_number(d_f, face_velocity, diff_coef)
-    pe_23 = np.power(pe, -2/3)
+    pe_23 = pe ** (-2/3)
     al_ku_ratio = np.power((1 - alpha) / ku, 1/3)
     numerator = 1.6 * al_ku_ratio * pe_23
     denominator = 1. + numerator
@@ -84,7 +86,7 @@ def interception_efficiency(d_p, d_f, alpha):
     return efficiency
 
 
-def polar_efficiency(d_p, d_f, charge, permittivity, slip_factor, face_velocity, viscosity):   
+def polar_efficiency(d_p, d_f, charge, permittivity, slip_factor, face_velocity, viscosity):
     """Capture efficiency factor from polarization.
     See Formula (11) in the paper.""" 
     num = slip_factor * charge ** 2 * d_p ** 2
@@ -94,12 +96,25 @@ def polar_efficiency(d_p, d_f, charge, permittivity, slip_factor, face_velocity,
     return eff
 
 
-
+def polar_efficiency2(d_p, d_f, alpha, charge, permittivity, dielectric, slip_factor, face_velocity, viscosity):
+    """Capture efficiency factor from polarization.
+    See Formula (13) in the paper."""
+    B = 0.21
+    ku = kuwabara_number(alpha)
+    c1 = ((1 - alpha) / ku) ** 2/5
+    from configs import DIELECTRIC_POLYPROPYLENE
+    num = slip_factor * charge ** 2 * d_p ** 2
+    den = (1 + dielectric) ** 2 * 3 * constants.pi * \
+        constants.epsilon_0 * viscosity * d_f ** 3 * face_velocity
+    nq_0 = (num / den * ((permittivity - 1) / (permittivity + 2))
+            )
+    eff = c1 * constants.pi * nq_0 / (1 + 2*constants.pi*nq_0 ** (2/3))
+    return eff
 
 # Penetration
 
 def layer_penetration(d_p, d_f, thickness, alpha, face_velocity, temp, viscosity,
-                      charge=None, permittivity=None):
+                      charge=None, permittivity=None, dielectric=None):
     """
     Compute log-layer penetration.
     
@@ -123,9 +138,10 @@ def layer_penetration(d_p, d_f, thickness, alpha, face_velocity, temp, viscosity
     # Single-fiber collection efficiency for the layer.
     if charge is not None:
         permittivity = permittivity or 1.
-        q_eff = polar_efficiency(
-            d_p, d_f, charge, permittivity, slip_factor, face_velocity,
-            viscosity)
+        # q_eff = polar_efficiency(
+        #     d_p, d_f, charge, permittivity, slip_factor, face_velocity, viscosity)
+        q_eff = polar_efficiency2(
+            d_p, d_f, alpha, charge, permittivity, dielectric, slip_factor, face_velocity, viscosity)
         fiber_coll_eff = 1 - (1 - diff_eff) * (1 - inter_eff) * (1 - q_eff)
     else:
         fiber_coll_eff = 1 - (1 - diff_eff) * (1 - inter_eff)
@@ -141,6 +157,7 @@ class LayerParams:
     alpha: float
     charge_density: float = None
     permittivity: float = None
+    dielectric: float = None
 
 
 def compute_penetration_profile(d_p, layer_params: List[LayerParams], face_velocity, temp, viscosity):
@@ -148,7 +165,7 @@ def compute_penetration_profile(d_p, layer_params: List[LayerParams], face_veloc
     for param in layer_params:
         layer_penet_ = layer_penetration(d_p, param.d_f, param.thickness, param.alpha,
                                          face_velocity, temp, viscosity,
-                                         charge=param.charge_density, permittivity=param.permittivity)
+                                         charge=param.charge_density, permittivity=param.permittivity, dielectric=param.dielectric)
         res_ += layer_penet_
     if isinstance(res_, np.ndarray):
         return np.exp(res_)

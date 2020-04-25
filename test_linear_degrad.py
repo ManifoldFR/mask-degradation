@@ -73,5 +73,4 @@ plt.xscale('log')
 plt.tight_layout()
 plt.show()
 
-anim_.save("linear_degradation.gif", writer='imagemagick',
-           fps=fps)
+anim_.save("linear_degradation.gif", writer='imagemagick', fps=fps)
