@@ -13,6 +13,7 @@ def kuwabara_number(alpha):
     """Compute the Kuwabara hydrodynamic factor."""
     return -0.5 * np.log(alpha) - 0.75 + alpha - .25 * alpha ** 2
 
+
 def peclet_number(d_f, face_velocity, diff_coef):
     """
     diff_coef : particle diffusion coefficient
@@ -30,6 +31,7 @@ def particle_diffusion_coef(d_p, temp, viscosity, slip_factor):
     num_ = constants.Boltzmann * temp * slip_factor
     den_ = 3 * constants.pi * viscosity * d_p
     return num_ / den_
+
 
 def cunningham_slip_correction(d_p, knudsen):
     """

@@ -10,7 +10,8 @@ from configs import respirator_A
 
 
 # Fluid parameters
-temp = 273.15
+# temp = 273.15
+temp = 300
 viscosity = 1.81e-5  # air viscosity in kg / (m.s)
 
 # Load mask configuration

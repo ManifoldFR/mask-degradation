@@ -13,8 +13,10 @@ import pyro.distributions as dist
 # q ~ LogNormal(13, 1.0) in nanometers
 
 # Fluid parameters
-temp = 273.15
-viscosity = 1.81e-5  # air viscosity in kg / (m.s)
+# temp = 273.15
+temp = 300
+viscosity = 1.81e-5  # dynamic viscosity in kg/m.s
+
 
 # Load mask configuration
 particle_diam_log = torch.linspace(math.log(10), math.log(1000), 41)
