@@ -36,16 +36,29 @@ results = penetration.compute_penetration_profile(
     particle_diam, layer_params, face_vel, temp, viscosity
 )
 
-print("Results:")
-print(results)
+
+## Test without polarization capture term
+
+for param in layer_params:
+    param.charge_density = None
+    param.permittivity = None
+
+results_nopolar = penetration.compute_penetration_profile(
+    particle_diam, layer_params, face_vel, temp, viscosity
+)
+
+mpps_nopolar = particle_diam[np.argmax(results_nopolar)]
 
 import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
 
-plt.plot(particle_diam, results)
+plt.plot(particle_diam, results, label="With charge term")
+plt.plot(particle_diam, results_nopolar, ls='--', label="No charge term")
+plt.vlines(mpps_nopolar, *plt.ylim(), ls='--')
 plt.xscale('log')
 plt.xlabel("Particle size $d_p$")
 plt.ylabel("Penetration")
+plt.legend()
 plt.show()
 
