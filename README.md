@@ -11,7 +11,7 @@ The probabilistic examples require PyTorch and [Pyro](https://pyro.ai).
 
 ## Generate synthetic data
 
-
+See `generate_synthetic_data.py`.
 
 ## References
 

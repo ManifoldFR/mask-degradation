@@ -6,12 +6,12 @@ from physics import dynamics
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-from configs import respirator_A, temperature, viscosity
+from configs import respiratorA, temperature, viscosity
 
 plt.style.use('ggplot')
 
 # Load mask configuration
-surface_area, layer_params = respirator_A()
+surface_area, layer_params = respiratorA()
 
 debit = 85 * constants.liter / constants.minute
 face_vel = debit / surface_area

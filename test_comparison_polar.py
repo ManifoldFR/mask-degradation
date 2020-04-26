@@ -5,11 +5,11 @@ from scipy import constants
 from physics import penetration
 from physics.penetration import LayerParams
 
-from configs import respirator_A, temperature, viscosity
+from configs import respiratorA, temperature, viscosity
 
 
 # Load mask configuration
-surface_area, layer_params = respirator_A()
+surface_area, layer_params = respiratorA()
 
 debit = 85 * constants.liter / constants.minute
 face_vel = debit / surface_area

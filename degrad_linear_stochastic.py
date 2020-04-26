@@ -1,6 +1,5 @@
 import numpy as np
 from scipy import constants
-from configs import respirator_A
 from physics import compute_penetration_profile
 from physics.dynamics import LinearDegradation
 
@@ -14,21 +13,21 @@ from stochastic import respirator_model_charge_prior
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-from configs import temperature, viscosity
+from configs import respiratorA, temperature, viscosity
 
 plt.style.use('ggplot')
 
 
+# Particle size range
+particle_diam = torch.linspace(math.log(10), math.log(1000), 21)
+particle_diam.exp_()
+particle_diam *= constants.nano
+
 # Load mask configuration
-surface_area, layer_params = respirator_A()
+surface_area, layer_params = respiratorA()
 
 debit = 85 * constants.liter / constants.minute
 face_vel = debit / surface_area
-
-# Particle size range
-
-particle_diam_log = torch.linspace(np.log(10), np.log(1000), 41)
-particle_diam = torch.exp(particle_diam_log) * constants.nano
 
 # 2 hours
 n_steps = 91

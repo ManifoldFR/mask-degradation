@@ -1,6 +1,6 @@
 """Example stochastic model: propagate uncertainties after putting a prior on the charge."""
 from physics import LayerParams, compute_penetration_profile
-from configs import respirator_A
+from configs import respiratorA
 from scipy import constants
 import torch
 import numpy as np
@@ -13,8 +13,9 @@ from pyro.ops.stats import quantile
 from configs import temperature, viscosity
 
 
-particle_diam_log = torch.linspace(math.log(10), math.log(1000), 41)
-particle_diam = torch.exp(particle_diam_log) * constants.nano
+particle_diam = torch.linspace(math.log(10), math.log(1000), 21)
+particle_diam.exp_()
+particle_diam *= constants.nano
 
 
 def respirator_model_charge_prior():
@@ -27,7 +28,7 @@ def respirator_model_charge_prior():
     charge = pyro.sample('q', dist.Normal(loc, std))
     # charge = pyro.sample('q', dist.Uniform(13 * constants.nano, 14 * constants.nano))
 
-    surface_area, layer_params = respirator_A(charge)
+    surface_area, layer_params = respiratorA(charge)
     return surface_area, layer_params
 
 def penetration(surface_area, layer_params):

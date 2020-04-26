@@ -15,7 +15,7 @@ temperature = 300
 viscosity = 1.81e-5  # air viscosity in kg / (m.s)
 
 
-def respirator_A(charge_density=13e-9):
+def respiratorA(charge_density=13e-9):
     """Parameters for respirator A in the paper by Bałazy, A. et al."""
     surface_area = 0.011  # in m2
 
