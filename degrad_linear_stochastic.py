@@ -12,11 +12,10 @@ import pyro.distributions as dist
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+from configs import temperature, viscosity
+
 plt.style.use('ggplot')
 
-# Fluid parameters
-temp = 273.15
-viscosity = 1.81e-5  # air viscosity in kg / (m.s)
 
 # Load mask configuration
 surface_area, layer_params = respirator_A()
@@ -50,14 +49,13 @@ def model():
 
     degrad = LinearDegradation(DEGRADE_RATE, layer_params)
 
-
     # Step through the model.
     results = []
 
     for t in times:
         state = degrad.step(t)
         res_t = compute_penetration_profile(
-            particle_diam, state, face_vel, temp, viscosity)
+            particle_diam, state, face_vel, temperature, viscosity)
         results.append(res_t)
 
     results = torch.stack(results)
@@ -71,6 +69,9 @@ with pyro.plate("charge_batch", 1000, dim=-2) as ctx:
 results_mean = results.mean(0)
 results_low = results_mean - 2 * results.std(0)
 results_high = results_mean + 2 * results.std(0)
+
+THRESHOLD = 6e-2
+
 
 fig: plt.Figure = plt.figure(dpi=70)
 ax = fig.add_subplot(111)
@@ -100,6 +101,8 @@ anim_ = animation.FuncAnimation(fig, anim_func, init_func=init,
                                 frames=n_steps, blit=True,
                                 interval=1e3/fps, repeat=False)
 
+plt.hlines(THRESHOLD, particle_diam.min(), particle_diam.max())
+
 ylims_ = plt.ylim()
 plt.title("Evolution with $\\mathcal{N}(13, 1)$ in nm")
 plt.ylim((ylims_[0], torch.max(results_high) * 1.05))
@@ -109,4 +112,4 @@ plt.xscale('log')
 plt.tight_layout()
 plt.show()
 
-anim_.save("assets/stochastic_linear_degrad.gif", writer='imagemagick', fps=fps)
+# anim_.save("assets/stochastic_linear_degrad.gif", writer='imagemagick', fps=fps)

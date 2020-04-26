@@ -10,12 +10,14 @@ PERMITTIVITY_POLYPROPYLENE = 2.3
 # permittivity of polyethylene
 PERMITTIVITY_POLYETHYLENE = 2.25
 
+# Fluid parameters
+temperature = 300
+viscosity = 1.81e-5  # air viscosity in kg / (m.s)
 
-def respirator_A():
+
+def respirator_A(charge_density=13e-9):
+    """Parameters for respirator A in the paper by Bałazy, A. et al."""
     surface_area = 0.011  # in m2
-
-    # permittivity of polypropylene
-    charge_density = 13 * constants.nano
 
     layer_params = [
         LayerParams(39.49*constants.micro, 0.31*constants.milli,
@@ -29,9 +31,9 @@ def respirator_A():
     return surface_area, layer_params
 
 
-def respirator_B():
+def respirator_B(charge_density=13e-9):
+    """Parameters for respirator B in the paper by Bałazy, A. et al."""
     surface_area = 0.0134  # in m2
-    charge_density = 13 * constants.nano
 
     layer_params = [
         LayerParams(7.19*constants.micro, 0.35*constants.milli,
