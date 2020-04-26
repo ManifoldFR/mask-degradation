@@ -31,7 +31,7 @@ def respirator_A(charge_density=13e-9):
     return surface_area, layer_params
 
 
-def respirator_B(charge_density=13e-9):
+def respiratorB(charge_density=13e-9):
     """Parameters for respirator B in the paper by Bałazy, A. et al."""
     surface_area = 0.0134  # in m2
 

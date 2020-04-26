@@ -9,6 +9,8 @@ import torch
 import pyro
 import pyro.distributions as dist
 
+from stochastic import respirator_model_charge_prior
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -32,18 +34,14 @@ particle_diam = torch.exp(particle_diam_log) * constants.nano
 n_steps = 91
 times = torch.linspace(0, 2, n_steps) * constants.hour
 
-def model():
-    loc = 13 * constants.nano
-    std = 1 * constants.nano
-    
-    # Lognormal prior
-    charge = pyro.sample("charge", dist.Normal(loc, std))
-    
-    surface_area, layer_params = respirator_A()
-    
-    for param in layer_params:
-        param.charge_density = charge
 
+def model():
+    
+    surface_area, layer_params = respirator_model_charge_prior()
+    
+    debit = 85 * constants.liter / constants.minute
+    face_vel = debit / surface_area
+    
     # Create degradation model
     DEGRADE_RATE = 0.04 / constants.hour  # mask characteristics degrade at 2%/hour
 

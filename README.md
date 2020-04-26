@@ -2,10 +2,15 @@
 
 ![](assets/penetration_gaussian_prior.png)
 
+![](assets/linear_degradation.gif)
+
 
 `test_comparison_polar.py` compares the impact of accounting for polarization effects in the penetration model.
 
 The probabilistic examples require PyTorch and [Pyro](https://pyro.ai).
+
+## Generate synthetic data
+
 
 
 ## References

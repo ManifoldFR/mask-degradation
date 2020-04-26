@@ -5,14 +5,8 @@ from scipy import constants
 from physics import penetration
 from physics.penetration import LayerParams
 
+from configs import respirator_A, temperature, viscosity
 
-from configs import respirator_A
-
-
-# Fluid parameters
-# temp = 273.15
-temp = 300
-viscosity = 1.81e-5  # air viscosity in kg / (m.s)
 
 # Load mask configuration
 surface_area, layer_params = respirator_A()
@@ -28,7 +22,7 @@ particle_diam_log = np.linspace(np.log(10), np.log(1000), 41)
 particle_diam = np.exp(particle_diam_log) * constants.nano
 
 results = penetration.compute_penetration_profile(
-    particle_diam, layer_params, face_vel, temp, viscosity
+    particle_diam, layer_params, face_vel, temperature, viscosity
 )
 
 
@@ -39,7 +33,7 @@ for param in layer_params:
     param.permittivity = None
 
 results_nopolar = penetration.compute_penetration_profile(
-    particle_diam, layer_params, face_vel, temp, viscosity
+    particle_diam, layer_params, face_vel, temperature, viscosity
 )
 
 mpps_nopolar = particle_diam[np.argmax(results_nopolar)]
