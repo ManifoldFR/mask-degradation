@@ -73,7 +73,7 @@ class SigmoidDegradation:
 
     def _param_t(self, t, tau_0, beta, x0):
         c = (1 + math.tanh(beta * (tau_0 - t))) / (1 + math.tanh(beta*tau_0))
-        x_tgt = 7e-9
+        x_tgt = 9e-9
         return c * (x0 - x_tgt) + x_tgt
 
     def step(self, t: float):

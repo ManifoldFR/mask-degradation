@@ -13,15 +13,15 @@ from scipy import constants
 import matplotlib.pyplot as plt
 
 
-batch_size = 5
+batch_size = 15
 
-true_charge = 11e-9
+true_charge = 15e-9
 surface_area, layer_params = respiratorA(charge_density=true_charge)
 
 debit = 85 * constants.liter / constants.minute
 face_vel = debit / surface_area
 
-particle_diam = torch.linspace(math.log(10), math.log(1000), 21)
+particle_diam = torch.linspace(math.log(10), math.log(600), 11)
 particle_diam.exp_() 
 particle_diam *= constants.nano
 
@@ -30,6 +30,8 @@ def model():
         particle_diam, layer_params, face_vel, temperature, viscosity
     ))
 
+    # extra variability:
+    # the measure noise increases with particle size
     scale = torch.ones(results.shape) * 1e-1
     mask = (particle_diam >= 100e-9)
     scale[mask] *= 4 * particle_diam[mask] * 1e7
@@ -51,7 +53,7 @@ df = pd.DataFrame(data=penet_samples.T.numpy(), index=particle_diam.numpy())
 
 
 os.makedirs("data", exist_ok=True)
-filename = "data/synthetic_respA.csv"
+filename = "data/synthetic_respA_batch15.csv"
 df.to_csv(filename)
 
 import json

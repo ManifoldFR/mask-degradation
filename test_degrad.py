@@ -21,7 +21,7 @@ face_vel = debit / surface_area
 particle_diam_log = np.linspace(np.log(10), np.log(1000), 41)
 particle_diam = np.exp(particle_diam_log) * constants.nano
 
-surface_area, layer_params = respirator_A()
+surface_area, layer_params = respiratorA()
 
 # Create degradation model
 DEGRADE_RATE = 0.04 / constants.hour  # mask characteristics degrade at 2%/hour
@@ -30,15 +30,15 @@ mode = "sigmoid"
 if mode == "linear":
     degrad = dynamics.LinearDegradation(DEGRADE_RATE, layer_params)
 elif mode == "sigmoid":
-    DEGRADE_RATE = 3 / constants.hour  # mask characteristics degrade at 2%/hour
-    degrad = dynamics.SigmoidDegradation(DEGRADE_RATE, layer_params, tau_0=1.4*constants.hour)
+    DEGRADE_RATE = 2 / constants.hour  # mask characteristics degrade at 2%/hour
+    degrad = dynamics.SigmoidDegradation(DEGRADE_RATE, layer_params, tau_0=4.5*constants.hour)
 
 
 if __name__ == "__main__":
     
     # 2 hours
     n_steps = 91
-    times = np.linspace(0, 2, n_steps) * constants.hour
+    times = np.linspace(0, 6, n_steps) * constants.hour
 
     results = []
     charge_t = []
@@ -83,11 +83,12 @@ if __name__ == "__main__":
 
     charge_t = np.asarray(charge_t)
 
-    plt.figure()
-    plt.plot(times, charge_t)
+    fig = plt.figure()
+    plt.plot(times / constants.hour, charge_t)
     plt.title("Charge density evolution")
-    plt.xlabel("Time")
+    plt.xlabel("Time (h)")
     plt.ylabel("Charge density (C/m)")
     plt.show()
+    fig.savefig("assets/charge_{}_evolution.png".format(mode))
 
-    # anim_.save("assets/{}_degradation.gif".format(mode), writer='imagemagick', fps=fps)
+    anim_.save("assets/{}_degradation.gif".format(mode), writer='imagemagick', fps=fps)
