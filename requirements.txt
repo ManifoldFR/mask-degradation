@@ -1,5 +1,5 @@
 numpy
 scipy
 matplotlib
-pytorch
-pyro==1.3.1
+pytorch>=1.4.0
+pyro-ppl==1.3.1
