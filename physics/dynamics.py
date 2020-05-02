@@ -1,5 +1,5 @@
 """Add degradation dynamics to the mask layer structure."""
-from physics.penetration import compute_penetration_profile, LayerParams
+from physics.penetration import compute_penetration_profile, MaskLayer
 from scipy import constants
 from typing import List
 import copy
@@ -9,7 +9,7 @@ import math
 
 class LinearDegradation:
     
-    def __init__(self, rate, init_layer_params: List[LayerParams]):
+    def __init__(self, rate, init_layer_params: List[MaskLayer]):
         """
         rate :
             If given a float, then intepreted as the fiber charge degradation slope. If a dictionary,
@@ -42,7 +42,7 @@ class LinearDegradation:
             coeffs_.update({
                 k: (1. - self.slope[k] * t) * getattr(params, k) for k in self.slope.keys()
             })
-            state.append(LayerParams(**coeffs_))
+            state.append(MaskLayer(**coeffs_))
         self.state = state
         return state
 
@@ -50,7 +50,7 @@ class LinearDegradation:
 class SigmoidDegradation:
     """Model degradation using a sigmoid."""
     
-    def __init__(self, rate, init_layer_params: List[LayerParams], tau_0=None):
+    def __init__(self, rate, init_layer_params: List[MaskLayer], tau_0=None):
         """
         rate :
             Rate of the sigmoid.
@@ -89,6 +89,6 @@ class SigmoidDegradation:
             coeffs_.update({
                 k: self._param_t(t, self.tau_0, self.beta[k], coeffs_[k])
                 for k in self.beta.keys()})
-            state.append(LayerParams(**coeffs_))
+            state.append(MaskLayer(**coeffs_))
         self.state = state
         return state

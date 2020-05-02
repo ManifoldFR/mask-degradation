@@ -2,16 +2,22 @@
 Compute the penetration response model from Bałazy, A. et al.
 (see README for full reference).
 """
+import torch
 import numpy as np
 from scipy import constants  # physics constants! :)
 from dataclasses import dataclass
+import dataclasses
 from typing import List
 import math
 
 
 def kuwabara_number(alpha):
     """Compute the Kuwabara hydrodynamic factor."""
-    return -0.5 * np.log(alpha) - 0.75 + alpha - .25 * alpha ** 2
+    if isinstance(alpha, torch.Tensor):
+        log_alpha = alpha.log()
+    else:
+        log_alpha = np.log(alpha)
+    return -0.5 * log_alpha - 0.75 + alpha - .25 * alpha ** 2
 
 
 def peclet_number(d_f, face_velocity, diff_coef):
@@ -39,7 +45,10 @@ def cunningham_slip_correction(d_p, knudsen):
     knudsen : knudsen number
     """
     # knudsen number
-    c_c = 1 + knudsen * (1.142 + 0.558 * np.exp(-0.999/knudsen))
+    if isinstance(knudsen, torch.Tensor):
+        c_c = 1 + knudsen * (1.142 + 0.558 * torch.exp(-0.999/knudsen))
+    else:
+        c_c = 1 + knudsen * (1.142 + 0.558 * np.exp(-0.999/knudsen))
     return c_c
 
 
@@ -153,7 +162,7 @@ def layer_penetration(d_p, d_f, thickness, alpha, face_velocity, temp, viscosity
     return log_penet
 
 @dataclass
-class LayerParams:
+class MaskLayer:
     d_f: float
     thickness: float
     alpha: float
@@ -162,15 +171,16 @@ class LayerParams:
     dielectric: float = None
 
 
-def compute_penetration_profile(d_p, layer_params: List[LayerParams], face_velocity, temp, viscosity):
+def compute_penetration_profile(d_p, layer_params: List[MaskLayer], face_velocity, temp, viscosity, return_log=True):
     res_ = 0.
     for param in layer_params:
         layer_penet_ = layer_penetration(d_p, param.d_f, param.thickness, param.alpha,
                                          face_velocity, temp, viscosity,
                                          charge=param.charge_density, permittivity=param.permittivity, dielectric=param.dielectric)
         res_ += layer_penet_
-    if isinstance(res_, np.ndarray):
-        return np.exp(res_)
-    else:
-        # assume torch.Tensor
-        return res_.exp()
+    if not return_log:
+        if isinstance(res_, torch.Tensor):
+            res_ = res_.exp()
+        else:
+            res_ = np.exp(res_)
+    return res_

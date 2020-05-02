@@ -1,5 +1,5 @@
 """Example stochastic model: propagate uncertainties after putting a prior on the charge."""
-from physics import LayerParams, compute_penetration_profile
+from physics import MaskLayer, compute_penetration_profile
 from configs import respiratorA
 from scipy import constants
 import torch
@@ -36,7 +36,8 @@ def penetration(surface_area, layer_params):
     face_vel = debit / surface_area
 
     results = compute_penetration_profile(
-        particle_diam, layer_params, face_vel, temperature, viscosity
+        particle_diam, layer_params, face_vel, temperature, viscosity,
+        return_log=False
     )
     return results
 

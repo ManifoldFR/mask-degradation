@@ -1,4 +1,4 @@
-from physics import LayerParams
+from physics import MaskLayer
 from scipy import constants
 
 
@@ -20,11 +20,11 @@ def respiratorA(charge_density=13e-9):
     surface_area = 0.011  # in m2
 
     layer_params = [
-        LayerParams(39.49*constants.micro, 0.31*constants.milli,
+        MaskLayer(39.49*constants.micro, 0.31*constants.milli,
                     0.165, charge_density, PERMITTIVITY_POLYPROPYLENE, DIELECTRIC_POLYPROPYLENE),
-        LayerParams(7.84 * constants.micro, 1.77*constants.milli,
+        MaskLayer(7.84 * constants.micro, 1.77*constants.milli,
                     0.069, charge_density, PERMITTIVITY_POLYPROPYLENE, DIELECTRIC_POLYPROPYLENE),
-        LayerParams(40.88*constants.micro, 1.05*constants.milli,
+        MaskLayer(40.88*constants.micro, 1.05*constants.milli,
                     0.200, charge_density, PERMITTIVITY_POLYPROPYLENE, DIELECTRIC_POLYPROPYLENE)
     ]
 
@@ -36,12 +36,17 @@ def respiratorB(charge_density=13e-9):
     surface_area = 0.0134  # in m2
 
     layer_params = [
-        LayerParams(7.19*constants.micro, 0.35*constants.milli,
+        MaskLayer(7.19*constants.micro, 0.35*constants.milli,
                     0.091, charge_density, PERMITTIVITY_POLYPROPYLENE, DIELECTRIC_POLYPROPYLENE),
-        LayerParams(7.19 * constants.micro, 0.35*constants.milli,
+        MaskLayer(7.19 * constants.micro, 0.35*constants.milli,
                     0.091, charge_density, PERMITTIVITY_POLYPROPYLENE, DIELECTRIC_POLYPROPYLENE),
-        LayerParams(34.25*constants.micro, 0.36*constants.milli,
+        MaskLayer(34.25*constants.micro, 0.36*constants.milli,
                     0.108, charge_density, PERMITTIVITY_POLYETHYLENE, DIELECTRIC_POLYETHYLENE)
     ]
 
     return surface_area, layer_params
+
+
+if __name__ == "__main__":
+    s_area_, layers_ = respiratorA()
+    

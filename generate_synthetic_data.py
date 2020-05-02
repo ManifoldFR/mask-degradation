@@ -12,6 +12,8 @@ from scipy import constants
 
 import matplotlib.pyplot as plt
 
+plt.style.use('ggplot')
+
 
 batch_size = 15
 
@@ -69,14 +71,21 @@ with open("data/synthetic_summary.json", "w") as f:
     json.dump(data_summary, f)
     
 
-plt.figure()
-plt.scatter(particle_diam.repeat(batch_size, 1), penet_samples, s=10, alpha=.6)
-plt.plot(particle_diam, penet_samples.mean(0), ls='--', c='k')
-plt.plot(particle_diam, penet_real, c='r')
-plt.title("Samples")
+fig = plt.figure()
+plt.scatter(particle_diam.repeat(batch_size, 1), penet_samples, s=10, alpha=.4, c='g',
+            label="Measurements")
+# plt.plot(particle_diam, penet_real, c='r', alpha=.4)
+errors_ = np.quantile(penet_samples-penet_samples.mean(0), (0.05, 0.9), axis=0)
+errors_[0] *= -1
+plt.errorbar(particle_diam, penet_samples.mean(0),
+             yerr=errors_, capsize=6.0, ecolor='k',
+             lw=1.0, elinewidth=1.4, ms=0, label="Mean and error bar")
+plt.title("Synthetic penetration data. True charge {:.3g}".format(true_charge))
 plt.xscale('log')
 plt.xlabel('Particle size $d_p$')
-plt.tight_layout()
+plt.ylabel('Penetration coefficient')
+plt.legend()
+fig.tight_layout()
 plt.show()
 
 

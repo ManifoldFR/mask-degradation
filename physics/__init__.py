@@ -1,1 +1,1 @@
-from .penetration import LayerParams, compute_penetration_profile
+from .penetration import MaskLayer, compute_penetration_profile

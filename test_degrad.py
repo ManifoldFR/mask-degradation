@@ -46,7 +46,8 @@ if __name__ == "__main__":
     for t in times:
         state = degrad.step(t)
         res_t = compute_penetration_profile(
-            particle_diam, state, face_vel, temperature, viscosity)
+            particle_diam, state, face_vel, temperature, viscosity,
+            return_log=True)
         results.append(res_t)
         charge_t.append([l.charge_density for l in state])
 

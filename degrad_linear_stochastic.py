@@ -52,7 +52,8 @@ def model():
     for t in times:
         state = degrad.step(t)
         res_t = compute_penetration_profile(
-            particle_diam, state, face_vel, temperature, viscosity)
+            particle_diam, state, face_vel, temperature, viscosity,
+            return_log=True)
         results.append(res_t)
 
     results = torch.stack(results)

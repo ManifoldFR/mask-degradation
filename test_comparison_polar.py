@@ -3,7 +3,7 @@ for particle penetration through the mechanical and electret filters."""
 import numpy as np
 from scipy import constants
 from physics import penetration
-from physics.penetration import LayerParams
+from physics.penetration import MaskLayer
 
 from configs import respiratorA, temperature, viscosity
 
@@ -22,8 +22,8 @@ particle_diam_log = np.linspace(np.log(10), np.log(1000), 41)
 particle_diam = np.exp(particle_diam_log) * constants.nano
 
 results = penetration.compute_penetration_profile(
-    particle_diam, layer_params, face_vel, temperature, viscosity
-)
+    particle_diam, layer_params, face_vel, temperature, viscosity,
+    return_log=True)
 
 
 ## Test without polarization capture term
